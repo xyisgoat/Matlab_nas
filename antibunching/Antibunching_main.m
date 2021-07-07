@@ -1,16 +1,20 @@
 clc,clear,close all
+%% 设置路径
+mainpath =  'W:\Yang Xu\Projects\Antibunching\';
+dirdata = [mainpath,'Data'];
+dirresult = [mainpath,'Results\']
+cd(dirdata)
 %% 输入文件信息
 prefix = 'STACKS_1-1';
 suffix = '.tif';
 filename = [prefix, suffix];
 %% 输入设置参数
-Offset = 100;
 PhotonThreshold = 500;
 EMgain = 500;
 ADunit = 5.02;
 PixelSize = 106.7; %nm
 QE = 0.9;
-ExposureTime = 10;
+ExposureTime = 10;  %ms
 R = 2;
 H = 0.5;
 S = 0.5;
@@ -23,7 +27,7 @@ if isfile(filename)
     %% 读入数据并转换成光子数
     fprintf('data file found\n');      
     Image = imstacksread(filename);
-    Image.photon = int2photon(Image.intensity,EMgain,ADunit,QE)
+    Image.photon = int2photon(Image.intensity,EMgain,ADunit,QE);
     sumImage.intensity = sum(Image.intensity,3);
     sumImage.photon = sum(Image.photon,3);  
     %% 计算a2,g2并赋值至对应的像素
@@ -96,6 +100,12 @@ if isfile(filename)
     %     xlim([1,Image.width]);ylim([1,Image.width]);colorbar;
     %     title('sum antibunching')   
     end
+    %% 输出结果
+    outputdir = [dirresult,prefix,'_',date,'-',...
+        num2str(hour(datetime('now'))),'-',num2str(minute(datetime('now'))),'\'];
+    mkdir(outputdir);
+    cd (outputdir);
+    imstackswrite
     %% 傅里叶插值
     interImage.intensity = interpft2(sumImage.intensity,N);
     interImage.photon = interpft2(sumImage.photon,N);
