@@ -2,8 +2,8 @@ clc,clear,close all
 %% 设置路径
 mainpath =  'W:\Yang Xu\Projects\Antibunching\';
 dirdata = [mainpath,'Data'];
-dirresult = [mainpath,'Results\']
-cd(dirdata)
+dirresult = [mainpath,'Results\'];
+cd(dirdata);
 %% 输入文件信息
 prefix = 'STACKS_1-1';
 suffix = '.tif';
@@ -104,10 +104,12 @@ if isfile(filename)
     interImage.intensity = interpft2(sumImage.intensity,N);
     interImage.photon = interpft2(sumImage.photon,N);
     %% 输出结果
-    outputdir = [dirresult,prefix,'_',date,'-',...
+    outputdir1 = [dirresult,prefix];
+    mkdir(outputdir1);
+    outputdir2 = [outputdir1,'\',date,'-',...
         num2str(hour(datetime('now'))),'-',num2str(minute(datetime('now'))),'\'];
-    mkdir(outputdir);
-    cd (outputdir);
+    mkdir(outputdir2);
+    cd (outputdir2);
     imstackswrite(sumImage.intensity,'sumImage_intensity.raw');
     imstackswrite(sumImage.photon,'sumImage_photon.raw');
     imstackswrite(sumImage.a2,'sumImage_a2.raw');        
