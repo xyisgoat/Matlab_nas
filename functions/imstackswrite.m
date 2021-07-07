@@ -3,6 +3,6 @@ function imstackswrite(img,fileName)
 % Written by Yang Xu, Jul. 2021
 f = fopen(fileName,'wb');
 fwrite(f,img,'int32');
-fclose('all')
+fclose('all');
 end
 
