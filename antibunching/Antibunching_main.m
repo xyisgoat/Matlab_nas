@@ -100,15 +100,27 @@ if isfile(filename)
     %     xlim([1,Image.width]);ylim([1,Image.width]);colorbar;
     %     title('sum antibunching')   
     end
+    %% 傅里叶插值
+    interImage.intensity = interpft2(sumImage.intensity,N);
+    interImage.photon = interpft2(sumImage.photon,N);
     %% 输出结果
     outputdir = [dirresult,prefix,'_',date,'-',...
         num2str(hour(datetime('now'))),'-',num2str(minute(datetime('now'))),'\'];
     mkdir(outputdir);
     cd (outputdir);
-    imstackswrite
-    %% 傅里叶插值
-    interImage.intensity = interpft2(sumImage.intensity,N);
-    interImage.photon = interpft2(sumImage.photon,N);
+    imstackswrite(sumImage.intensity,'sumImage_intensity.raw');
+    imstackswrite(sumImage.photon,'sumImage_photon.raw');
+    imstackswrite(sumImage.a2,'sumImage_a2.raw');        
+    imstackswrite(sumImage.g2,'sumImage_g2.raw');    
+    imstackswrite(sumImage.a3,'sumImage_a3.raw');  
+    imstackswrite(sumImage.g3,'sumImage_g3.raw');
+    imstackswrite(interImage.intensity,'interImage_intensity.raw'); 
+    imstackswrite(interImage.photon,'interImage_photon.raw');     
+    imstackswrite(interImage.suma2,'interImage_suma2.raw'); 
+    imstackswrite(interImage.suma3,'interImage_suma3.raw');
+    imstackswrite(interImage.sumg2,'interImage_sumg2.raw');
+    imstackswrite(interImage.sumg3,'interImage_sumg3.raw');
+
     %% a2结果
     h1 = figure;
     set(h1,'unit','pixels','position',[280,30,799,696],'color',[1,1,1]);      
