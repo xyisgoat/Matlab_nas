@@ -27,9 +27,9 @@ function [C,W,FWHM,D,B,R,yft,gof,formula_out,D_confint] = ODMRFit(pks,fitf,fitda
         ft2 = fittype(formula,'independent','x','coefficient',coef) ;
         formula_out = formula;
         [yft1,gof1] = fit(fitf',fitdata',ft2,...
-        'StartPoint',[Para_B,Para_D,Para_W,Para_C,Para_D + 8,Para_W,Para_C]);
+        'StartPoint',[Para_B,Para_D,Para_W,Para_C,Para_D + 10,Para_W,Para_C]);
         [yft2,gof2] = fit(fitf',fitdata',ft2,...
-        'StartPoint',[Para_B,Para_D,Para_W,Para_C,Para_D - 8,Para_W,Para_C]);
+        'StartPoint',[Para_B,Para_D,Para_W,Para_C,Para_D - 10,Para_W,Para_C]);
         R1 = gof1.rsquare; R2 = gof2.rsquare;
 
         if R1 <= R2

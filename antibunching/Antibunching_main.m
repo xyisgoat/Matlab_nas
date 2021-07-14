@@ -5,11 +5,10 @@ dirdata = [mainpath,'Data'];
 dirresult = [mainpath,'Results\'];
 cd(dirdata);
 %% 输入文件信息
-prefix = 'STACKS_1-1';
+prefix = 'ECL_stacks_1.2V,-1.2V, 1Hz_50ms, 500-1';
 suffix = '.tif';
 filename = [prefix, suffix];
 %% 输入设置参数
-PhotonThreshold = 500;
 EMgain = 500;
 ADunit = 5.02;
 PixelSize = 106.7; %nm
@@ -35,8 +34,8 @@ if isfile(filename)
     for R = 0
         n = n + 1;
         A2stacks = {[],[],[],[]};
-        sumImage.a2 = zeros(Image.width,Image.height,4);
-        interImage.a2 = zeros(Image.width * N, Image.height * N,4);
+        sumImage.a2 = zeros(Image.height,Image.width,4);
+        interImage.a2 = zeros(Image.height * N, Image.width * N,4);
         for i = 1:4
             fprintf('Processing  g2,a2, loop %.d ... ', i)
             t1 = clock; 
@@ -45,10 +44,10 @@ if isfile(filename)
             corr2result = corr2calc(pattern, tau, R, N, Image.photon);
             %a2 signal        
             sumImage.a2(:,:,i) = corr2result.sumA2stacks;
-            interImage.a2(:,:,i) = corr2result.intersumA2stacks;
+            interImage.a2(:,:,i) = corr2result.intersumA2stacks';
             %g2 signal
             sumImage.g2(:,:,i) = corr2result.sumG2stacks;
-            interImage.g2(:,:,i) = corr2result.intersumG2stacks;
+            interImage.g2(:,:,i) = corr2result.intersumG2stacks';
 
             t2 = clock;
             fprintf('Process Time = %.5f Seconds\n',etime(t2,t1));                
@@ -70,8 +69,8 @@ if isfile(filename)
     for R = 0
         n = n + 1;
         A3stacks = {[],[],[],[]};
-        sumImage.a3 = zeros(Image.width,Image.height,4);
-        interImage.a3 = zeros(Image.width * N, Image.height * N,4);
+        sumImage.a3 = zeros(Image.height,Image.width,4);
+        interImage.a3 = zeros(Image.height * N, Image.width * N,4);
         for i = 1:4
             fprintf('Processing g3,a3, loop %.d ... ', i)
             t1 = clock; 
@@ -80,10 +79,10 @@ if isfile(filename)
             corr3result = corr3calc(pattern,tau,tau,H,S,N,Image.photon);
             %a2 signal        
             sumImage.a3(:,:,i) = corr3result.sumA3stacks;
-            interImage.a3(:,:,i) = corr3result.intersumA3stacks;
+            interImage.a3(:,:,i) = corr3result.intersumA3stacks';
             %g2 signal
             sumImage.g3(:,:,i) = corr3result.sumG3stacks;
-            interImage.g3(:,:,i) = corr3result.intersumG3stacks;
+            interImage.g3(:,:,i) = corr3result.intersumG3stacks';
 
             t2 = clock;
             fprintf('Process Time = %.5f Seconds\n',etime(t2,t1));                
@@ -101,8 +100,8 @@ if isfile(filename)
     %     title('sum antibunching')   
     end
     %% 傅里叶插值
-    interImage.intensity = interpft2(sumImage.intensity,N);
-    interImage.photon = interpft2(sumImage.photon,N);
+    interImage.intensity = interpft2(sumImage.intensity,N)';
+    interImage.photon = interpft2(sumImage.photon,N)';
     %% 输出结果
     outputdir1 = [dirresult,prefix];
     mkdir(outputdir1);
@@ -110,18 +109,8 @@ if isfile(filename)
         num2str(hour(datetime('now'))),'-',num2str(minute(datetime('now'))),'\'];
     mkdir(outputdir2);
     cd (outputdir2);
-    imstackswrite(sumImage.intensity,'sumImage_intensity.raw');
-    imstackswrite(sumImage.photon,'sumImage_photon.raw');
-    imstackswrite(sumImage.a2,'sumImage_a2.raw');        
-    imstackswrite(sumImage.g2,'sumImage_g2.raw');    
-    imstackswrite(sumImage.a3,'sumImage_a3.raw');  
-    imstackswrite(sumImage.g3,'sumImage_g3.raw');
-    imstackswrite(interImage.intensity,'interImage_intensity.raw'); 
-    imstackswrite(interImage.photon,'interImage_photon.raw');     
-    imstackswrite(interImage.suma2,'interImage_suma2.raw'); 
-    imstackswrite(interImage.suma3,'interImage_suma3.raw');
-    imstackswrite(interImage.sumg2,'interImage_sumg2.raw');
-    imstackswrite(interImage.sumg3,'interImage_sumg3.raw');
+
+	result_output(sumImage,interImage,Image,N);
 
     %% a2结果
     h1 = figure;
@@ -178,15 +167,15 @@ if isfile(filename)
     title('interplot sum a2 Pattern 4') 
     
     %% g2结果
-    h2 = figure
+    h2 = figure;
     set(h2,'unit','pixels','position',[280,30,799,696],'color',[1,1,1]);      
 
-    subplot(subcol,subcol,1)
+    subplot(subrow,subcol,1)
     surface([1:Image.width],[1:Image.height],sumImage.intensity,'EdgeColor','none');
     xlim([1,Image.width]);ylim([1,Image.height]);colorbar;
     title('sum intensity')
        
-    subplot(subcol,subcol,2)
+    subplot(subrow,subcol,2)
     surface([1:Image.width],[1:Image.height],sumImage.photon,'EdgeColor','none');
     xlim([1,Image.width]);ylim([1,Image.height]);colorbar;
     title('sum photoncounts')    
@@ -286,15 +275,15 @@ if isfile(filename)
     title('interplot sum a3 Pattern 4') 
     
     %%  g3结果
-    h4 = figure
+    h4 = figure;
     set(h4,'unit','pixels','position',[280,30,799,696],'color',[1,1,1]);      
 
-    subplot(subcol,subcol,1)
+    subplot(subrow,subcol,1)
     surface([1:Image.width],[1:Image.height],sumImage.intensity,'EdgeColor','none');
     xlim([1,Image.width]);ylim([1,Image.height]);colorbar;
     title('sum intensity')
        
-    subplot(subcol,subcol,2)
+    subplot(subrow,subcol,2)
     surface([1:Image.width],[1:Image.height],sumImage.photon,'EdgeColor','none');
     xlim([1,Image.width]);ylim([1,Image.height]);colorbar;
     title('sum photoncounts')    

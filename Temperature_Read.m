@@ -1,8 +1,8 @@
 clc,clear,close all
 %%
-cd 'E:\XY\Data\20210707'
+cd 'E:\XY\Data\20210711'
 %%
-prefix = ['ReceivedTofile-COM6-2021_7_7_1-22-28'];
+prefix = ['ReceivedTofile-COM6-2021_7_11_23-28-33'];
 suffix = ['.DAT'];
 filename = [prefix,suffix];
 f = fopen(filename);
@@ -22,7 +22,7 @@ for i = 1:length(data_reshape)
     temp2 = num2str(data_reshape{5,i});
     T(i) = hex2dec([temp1,temp2])/10;
 end
-% T = T-T(1);
+% T = T-rms(T);
 %%
 h1 = figure;
 set(h1,'unit','pixels','position',[0 0 1200 900],'color',[1,1,1]);  
