@@ -75,7 +75,7 @@ function corr3result = corr3calc(pattern,tau1,tau2,H,S,N,Image)
     
     Im1kIm2kIm3k = Image_1k.*Image_2.*Image_3 + Image_1.*Image_2k.*Image_3 + Image_1.*Image_2.*Image_3k;
     %% 计算a2 signal
-    corr3result.A3stacks =  Im1Im2Im3 +  0.2 * H * Im1ImpImq - 0.1 * S * Im1kIm2kIm3k;
+    corr3result.A3stacks =  -(Im1Im2Im3 + 0.2 * H * Im1ImpImq - 0.1 * S * Im1kIm2kIm3k);
     corr3result.sumA3stacks = zeros(width,height);
     corr3result.sumA3stacks(1+pattern(1,1):end-pattern(1,2),1+pattern(2,1):end-pattern(2,2)) = sum(corr3result.A3stacks,3);
     corr3result.intersumA3stacks = interpft2(corr3result.sumA3stacks,N);
