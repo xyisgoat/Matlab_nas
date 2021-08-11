@@ -37,7 +37,7 @@ function corr2result = corr2calc(pattern,tau,R,N,Image)
     corr2result.sumA2stacks(1+pattern(1,1):end-pattern(1,2),1+pattern(2,1):end-pattern(2,2)) = sum(corr2result.A2stacks,3);
     corr2result.intersumA2stacks = interpft2(corr2result.sumA2stacks,N);
     %% 计算g2 signal
-    corr2result.G2stacks =   mean(Im1Im2,3)-aveIm1Im2;
+    corr2result.G2stacks =   mean(Im1Im2,3)./aveIm1Im2;
     corr2result.sumG2stacks = zeros(width,height);
     corr2result.sumG2stacks(1+pattern(1,1):end-pattern(1,2),1+pattern(2,1):end-pattern(2,2)) = mean(corr2result.G2stacks,3);
     corr2result.intersumG2stacks = interpft2(corr2result.sumG2stacks,N);   
